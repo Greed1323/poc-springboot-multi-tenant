@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.config.connexion;
 
 import java.util.HashMap;
 import java.util.Map;

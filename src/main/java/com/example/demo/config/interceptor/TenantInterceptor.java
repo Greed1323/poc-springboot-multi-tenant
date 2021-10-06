@@ -1,7 +1,9 @@
-package com.example.demo.config;
+package com.example.demo.config.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.example.demo.config.context.TenantContext;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

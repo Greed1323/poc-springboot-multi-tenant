@@ -1,4 +1,6 @@
-package com.example.demo.config;
+package com.example.demo.config.connexion;
+
+import com.example.demo.config.context.TenantContext;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.stereotype.Component;

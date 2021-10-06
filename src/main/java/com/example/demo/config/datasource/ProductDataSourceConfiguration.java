@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 import javax.sql.DataSource;
 
-import com.example.demo.config.TenantConnectionProvider;
-import com.example.demo.config.TenantSchemaResolver;
+import com.example.demo.config.connexion.TenantConnectionProvider;
+import com.example.demo.config.connexion.TenantSchemaResolver;
 import com.zaxxer.hikari.HikariDataSource;
 
 import org.hibernate.MultiTenancyStrategy;

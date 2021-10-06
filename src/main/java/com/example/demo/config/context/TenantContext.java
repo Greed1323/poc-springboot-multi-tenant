@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.config.context;
 
 public class TenantContext {
 
