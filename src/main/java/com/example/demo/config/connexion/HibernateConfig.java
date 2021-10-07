@@ -17,28 +17,28 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 @Configuration
 public class HibernateConfig {
-	@Autowired
-	private JpaProperties jpaProperties;
+    @Autowired
+    private JpaProperties jpaProperties;
 
-	@Bean
-	JpaVendorAdapter jpaVendorAdapter() {
-		return new HibernateJpaVendorAdapter();
-	}
+    @Bean
+    JpaVendorAdapter jpaVendorAdapter() {
+        return new HibernateJpaVendorAdapter();
+    }
 
-	@Bean
-	LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
-			TenantConnectionProvider multiTenantConnectionProviderImpl,
-			TenantSchemaResolver currentTenantIdentifierResolverImpl) {
-		Map<String, Object> jpaPropertiesMap = new HashMap<>(jpaProperties.getProperties());
-		jpaPropertiesMap.put(Environment.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
-		jpaPropertiesMap.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProviderImpl);
-		jpaPropertiesMap.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolverImpl);
+    @Bean
+    LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource,
+        TenantConnectionProvider multiTenantConnectionProviderImpl, TenantSchemaResolver currentTenantIdentifierResolverImpl) {
+        Map<String, Object> jpaPropertiesMap = new HashMap<>(jpaProperties.getProperties());
+        jpaPropertiesMap.put(Environment.MULTI_TENANT, MultiTenancyStrategy.SCHEMA);
+        jpaPropertiesMap.put(Environment.MULTI_TENANT_CONNECTION_PROVIDER, multiTenantConnectionProviderImpl);
+        jpaPropertiesMap.put(Environment.MULTI_TENANT_IDENTIFIER_RESOLVER, currentTenantIdentifierResolverImpl);
 
-		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-		em.setDataSource(dataSource);
-		em.setPackagesToScan("com.example.demo*");
-		em.setJpaVendorAdapter(this.jpaVendorAdapter());
-		em.setJpaPropertyMap(jpaPropertiesMap);
-		return em;
-	}
+        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+        em.setDataSource(dataSource);
+        em.setPackagesToScan("com.example.demo*");
+        em.setJpaVendorAdapter(this.jpaVendorAdapter());
+        em.setJpaPropertyMap(jpaPropertiesMap);
+        em.getJpaPropertyMap().put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+        return em;
+    }
 }

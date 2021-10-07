@@ -15,9 +15,9 @@ import lombok.Setter;
 @Table(name = "user_entity")
 public class UserEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
-	private String name;
+    private String name;
 }
