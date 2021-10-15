@@ -2,12 +2,13 @@ package com.example.demo.config.datasource;
 
 import com.example.demo.config.connexion.TenantConnectionProvider;
 import com.example.demo.config.connexion.TenantSchemaResolver;
+import com.example.demo.dao.common.WorkspaceCommonRepository;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -25,12 +26,23 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import liquibase.integration.spring.MultiTenantSpringLiquibase;
+
 @Configuration
 @EnableJpaRepositories(basePackages = "com.example.demo.dao.tenant", entityManagerFactoryRef = "productEntityManager", transactionManagerRef = "productTransactionManager")
 public class ProductDataSourceConfiguration {
 
     @Autowired
     private DataSourceProperties properties;
+
+    @Autowired
+    private WorkspaceCommonRepository wsRepo;
+
+    private final static Map<Object, Object> resolvedDataSources = new HashMap<>();
+
+    public static Map<Object, Object> getDataSources() {
+        return resolvedDataSources;
+    }
 
     @Bean
     @ConfigurationProperties(prefix = "app.datasource.product")
@@ -39,11 +51,11 @@ public class ProductDataSourceConfiguration {
     }
 
     @Bean
-    public DataSource productDataSource() {
-        Map<Object, Object> resolvedDataSources = new HashMap<>();
+    public MultitenantDataSource productDataSource() {
 
         DataSource defaultDataSource = defaultDataSource();
-        List<String> tenants = Arrays.asList("plop", "airbasedb");
+
+        List<String> tenants = wsRepo.findAll().stream().map(e -> e.getName()).collect(Collectors.toList());
         for (String tenant : tenants) {
             Properties tenantProperties = new Properties();
             DataSourceBuilder dataSourceBuilder = DataSourceBuilder.derivedFrom(defaultDataSource);
@@ -63,6 +75,18 @@ public class ProductDataSourceConfiguration {
 
         // Call this to finalize the initialization of the data source.
         dataSource.afterPropertiesSet();
+
+        MultiTenantSpringLiquibase msl = new MultiTenantSpringLiquibase();
+        msl.setDataSource(dataSource);
+        msl.setChangeLog("classpath:/db/tenant/db.changelog-master.xml");
+        msl.setSchemas(tenants);
+        msl.setShouldRun(true);
+        try {
+            msl.afterPropertiesSet();
+        } catch (Exception e1) {
+            System.err.println("La migration de la BD des tenants a planté");
+            e1.printStackTrace();
+        }
 
         return dataSource;
     }

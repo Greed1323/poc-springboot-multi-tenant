@@ -19,6 +19,9 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import liquibase.exception.LiquibaseException;
+import liquibase.integration.spring.SpringLiquibase;
+
 @Configuration
 @EnableJpaRepositories(basePackages = "com.example.demo.dao.common", entityManagerFactoryRef = "primeEntityManager", transactionManagerRef = "primeTransactionManager")
 public class PrimeDataSourceConfiguration {
@@ -36,7 +39,18 @@ public class PrimeDataSourceConfiguration {
     @Bean
     @Primary
     public DataSource primeDataSource() {
-        return primeDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
+        HikariDataSource dataSource = primeDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
+        SpringLiquibase migrationExecutor = new SpringLiquibase();
+        migrationExecutor.setDataSource(dataSource);
+        migrationExecutor.setChangeLog("classpath:/db/main/db.changelog-master.xml");
+        try {
+            migrationExecutor.afterPropertiesSet();
+        } catch (LiquibaseException e) {
+            System.err.println("La migration de la BD principale a planté");
+            e.printStackTrace();
+        }
+
+        return dataSource;
     }
 
     @Bean
