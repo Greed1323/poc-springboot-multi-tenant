@@ -1,12 +1,22 @@
 package com.example.demo.service;
 
-import java.util.List;
-
 import com.example.demo.controller.UserDto;
 import com.example.demo.dao.common.WorkspaceEntity;
 
-public interface WorkspaceService {
-	public List<WorkspaceEntity> getAllCommonWorkspaces();
+import java.util.List;
 
-	public UserDto getAllUsers();
+public interface WorkspaceService {
+    public List<WorkspaceEntity> getAllCommonWorkspaces();
+
+    public UserDto getAllUsers();
+
+    public void createTenant();
+
+    public void copyUsers();
+
+    void slowRequestTenant();
+
+    void quickRequestTenant();
+
+    void createMassUsers();
 }
