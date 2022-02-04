@@ -20,6 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -34,6 +35,9 @@ public class ProductDataSourceConfiguration {
 
     @Autowired
     private DataSourceProperties properties;
+
+    @Autowired
+    ResourceLoader resourceLoader;
 
     @Autowired
     private WorkspaceCommonRepository wsRepo;
@@ -79,6 +83,7 @@ public class ProductDataSourceConfiguration {
         MultiTenantSpringLiquibase msl = new MultiTenantSpringLiquibase();
         msl.setDataSource(dataSource);
         msl.setChangeLog("classpath:/db/tenant/db.changelog-master.xml");
+        msl.setResourceLoader(resourceLoader);
         msl.setSchemas(tenants);
         msl.setShouldRun(true);
         try {

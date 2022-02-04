@@ -87,15 +87,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         StopWatch watch = new StopWatch();
         watch.start();
         List<UserEntity> users = this.userRepository.findAll();
-        users.get(0).setName("Avant changement de tenant");
-        userRepository.save(users.get(0));
+        UserEntity userEntity = users.stream().filter(u -> u.getId() == 1L).findFirst().orElse(null);
+        userEntity.setName("Avant changement de tenant");
+        userRepository.save(userEntity);
         System.err.println("tenant 1 " + users.size());
+        userEntity.setName("Après changement de tenant");
+        long l = userEntity.getId();
 
         TenantContext.setCurrentTenant("tenant2");
-        users.get(0).setName("Après changement de tenant");
+        UserEntity userEntity2 = users.get(0);
+        userEntity2.setId(1L);
+        userRepository.save(userEntity2);
         userRepository.saveAll(users);
         int userNb = userRepository.findAll().size();
-        System.err.println("tenant 2 " + userNb);
+        // userRepository.save(userEntity);
+        System.err.println("tenant 2 " + userNb + " id " + l);
         watch.stop();
         System.err.println("Time for copy of " + userNb + " simple elements " + watch.getTotalTimeSeconds() + " seconds");
     }

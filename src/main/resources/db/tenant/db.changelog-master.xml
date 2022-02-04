@@ -7,6 +7,6 @@
       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
       http://www.liquibase.org/xml/ns/pro 
       http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">  
-<!--     <includeAll path="db/main/*/*.xml"/>   -->
-<include file="db/tenant/*/*.xml"/>
+    <includeAll  path="/db/tenant/sprint1/" />  
+<!-- <include file="db/tenant/*/*.xml"/> -->
 </databaseChangeLog> 

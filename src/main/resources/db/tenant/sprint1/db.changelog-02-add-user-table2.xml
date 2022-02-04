@@ -8,15 +8,8 @@
       http://www.liquibase.org/xml/ns/pro 
       http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">  
 
-	<changeSet author="GRR" id="add-user-table"
+	<changeSet author="GRR" id="-data"
 		runInTransaction="true">
-		<createTable tableName="user_entity">
-			<column name="id" type="integer"  >
-				<constraints nullable="false" primaryKey="true" primaryKeyName="PK_tenant"/>
-			</column>
-			<column name="name" type="varchar(256)">
-				<constraints nullable="false" />
-			</column>
-		</createTable>
+		<insert tableName="user_entity"><column name="id">1</column><column name="name">plop</column></insert>
 	</changeSet>
 </databaseChangeLog>

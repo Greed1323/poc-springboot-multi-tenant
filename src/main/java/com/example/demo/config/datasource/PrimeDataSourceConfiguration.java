@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -25,6 +26,9 @@ import liquibase.integration.spring.SpringLiquibase;
 @Configuration
 @EnableJpaRepositories(basePackages = "com.example.demo.dao.common", entityManagerFactoryRef = "primeEntityManager", transactionManagerRef = "primeTransactionManager")
 public class PrimeDataSourceConfiguration {
+
+    @Autowired
+    ResourceLoader resourceLoader;
 
     @Autowired
     Environment env;
@@ -42,7 +46,8 @@ public class PrimeDataSourceConfiguration {
         HikariDataSource dataSource = primeDataSourceProperties().initializeDataSourceBuilder().type(HikariDataSource.class).build();
         SpringLiquibase migrationExecutor = new SpringLiquibase();
         migrationExecutor.setDataSource(dataSource);
-        migrationExecutor.setChangeLog("classpath:/db/main/db.changelog-master.xml");
+        migrationExecutor.setChangeLog("/db/main/db.changelog-master.xml");
+        migrationExecutor.setResourceLoader(resourceLoader);
         try {
             migrationExecutor.afterPropertiesSet();
         } catch (LiquibaseException e) {
